@@ -37,7 +37,7 @@ def make_sensors(alt, lng, lat, degrees, minutes):
     return sensors
 
 
-def make_cp(search_algo_version, nb_cp, stichable, optimized, lot):
+def make_cp(search_algo_version, nb_cp, stichable, lot, optimized=False):
     cp = client.Cp()
     cp.search_algo_version = search_algo_version
     cp.nb_cp = nb_cp

@@ -12,9 +12,7 @@ stop:
 start: filemanager api
 	@sleep 1 # Wait one second that every server correctly started
 
-pytest: 
-	pytest
-
-tests: start pytest stop
+tests: start
+	pytest; STATUS=$?; make stop; exit $(STATUS)
 
 # vim: noexpandtab filetype=make

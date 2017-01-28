@@ -10,7 +10,7 @@ from shutil import copyfile
 
 from time import sleep
 
-from path import path
+from path import Path
 
 from .utils import singleton, ensure_dir
 
@@ -55,7 +55,7 @@ class APN_copy(threading.Thread):
         with open("/proc/mounts", "r") as mounts:
             for line in mounts:
                 if line.startswith(self.devname):
-                    return path(line.split(' ')[1])
+                    return Path(line.split(' ')[1])
 
     def doClearSD(self):
         """
@@ -96,7 +96,7 @@ class APN_copy(threading.Thread):
         src = self.foundMountedPath()  # Where is mounted devname
 
         try:  # Get config file for APN
-            with open(path(src) / "APN_config", "r") as apnConfFile:
+            with open(Path(src) / "APN_config", "r") as apnConfFile:
                 self.apn_conf = json.load(apnConfFile)
         except FileNotFoundError:  # if partition isn't OPV data partition
             print("Error ! No APN_config file founded")
@@ -121,7 +121,7 @@ class APN_copy(threading.Thread):
             print("We don't know what is the number of APN, aborting")
             return False
         a = dataDir.format(campaign=Main().campaign)
-        dest = path(a).expand() / "APN{}".format(apn_n)
+        dest = Path(a).expand() / "APN{}".format(apn_n)
 
         dest.makedirs_p()
 
