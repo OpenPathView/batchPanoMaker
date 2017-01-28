@@ -7,7 +7,6 @@ Flask-SQLAlchemy==2.1
 httpie==0.9.9
 path.py==10.1
 Potion-client==2.5.0
-pytest==3.0.6
 pyudev==0.21.0
 redis==2.10.5
 SQLAlchemy==1.1.5
