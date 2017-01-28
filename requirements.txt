@@ -1,3 +1,4 @@
+pytest==3.0.6
 celery[redis]
 docopt==0.6.2
 ExifRead==2.1.2
