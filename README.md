@@ -49,13 +49,18 @@ Returns:
     "path": "/tmp/1"
 }
 ```
+Some content for more easy debugging:
+- stop the server (only if --debug is precised while launching the server): `http POST :5000/shutdown`
+
 ### API
+It's a server located on port 5000
 The API server implement this database:
 ![Database](https://raw.githubusercontent.com/OpenPathView/batchPanoMaker/master/doc/database/main_db.png)
 And some content for more easy debugging:
 - get all lots of an campaign (here campaign ID=1): `httpie GET :5000/campaign/1/lots`
 - get all cp of a lot (here lot ID=1): `httpie GET :5000/lot/1/cps`
 - get all tiles of a panorama (here panorama ID=1): `httpie GET :5000/panorama/1/tiles`
+- stop the server (only if --debug is precised while launching the server): `http POST :5000/shutdown`
 
 
 ### Import data script
