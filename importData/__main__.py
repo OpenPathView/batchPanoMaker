@@ -3,7 +3,7 @@
 
 """Import the data into the treatment chain
 Usage:
-    ./import.py [options] <campaign>
+    opv-import [options] <campaign>
 
 Arguments:
     campaign              The name of the campaign to import
@@ -15,9 +15,12 @@ Options:
                             This need sudo rights and you may loose
                             the content of the SD card if something fail !
                           /!\\
+    --config-file=<str>   The path to the config file.[default: ./config/main.json]
     --clean-sd            Do NOT clean SD after copying.
     --no-treat            Don't treat files
     --treat               Treat files
+    --export              Send files to the celery queue
+    --no-export           Don't send files to the celery queue
     --import              Import files
     --no-import           Don't import files
     --data-dir=<str>      Where should be placed file imported from SD
@@ -25,27 +28,27 @@ Options:
     --id-rederbro=<str>   Id of the rederbro use fot the campaign
     --description=<str>   Description of the campaign
 """
-import task
-import managedb
+from . import task
+from . import managedb
+from .treat import treat
+from .importSD import Main
+from .makeLots import makeLots
+from .utils import Config, convert_args
 
 from path import path
-from treat import treat
 from docopt import docopt
-from importSD import Main
-from makeLots import makeLots
-from utils import Config, convert_args
 
 
-if __name__ == "__main__":
+def main():
     """ Import Images from SD """
     # Read the __doc__ and build the Arguments
     args = docopt(__doc__)
     f_args = dict()
 
     # Convert args
-    for n in ['clean-sd', 'import', 'treat']:
+    for n in ['clean-sd', 'import', 'treat', 'export']:
         f_args[n] = convert_args(args, n, True)
-    for n in ['data-dir', 'lots-output-dir', 'id-rederbro', 'description', 'csv-path']:
+    for n in ['config-file', 'data-dir', 'lots-output-dir', 'id-rederbro', 'description', 'csv-path']:
         f_args[n] = convert_args(args, n)
     f_args['campaign'] = args['<campaign>']
 
@@ -56,14 +59,13 @@ if __name__ == "__main__":
     # !!!!!!!
     # To change : not absolute path
     # !!!!!!!
-    conf = Config('config/main.json')
+    conf = Config(f_args.pop('config-file'))
     conf.update(f_args)
 
     print("=================================================")
     print("===== Let's import the image from SD card =======")
 
     campaign = managedb.make_campaign(conf['campaign'], conf['id-rederbro'], conf.get('description'))
-    lots = []
 
     # We need to improve this
     # Case 1 : we pass the Arguments
@@ -80,4 +82,9 @@ if __name__ == "__main__":
         for l in makeLots(srcDir, csvFile):
             lot = treat(campaign, l)
             # lot object can't be send through network
-            task.assemble.delay(lot.id)
+            if conf.get('export'):
+                task.assemble.delay(lot.id)
+
+
+if __name__ == "__main__":
+    main()

@@ -12,7 +12,7 @@ from time import sleep
 
 from path import path
 
-from utils import singleton, ensure_dir
+from .utils import singleton, ensure_dir
 
 
 class APN_copy(threading.Thread):
